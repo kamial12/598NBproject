@@ -1,0 +1,20 @@
+ID2304_195601 23.04 19:57:21>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_195601 23.04 19:57:21>	Experiment 1: seed 18
+ID2304_202101 23.04 20:22:17>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_202101 23.04 20:22:17>	Experiment 1: seed 18
+ID2304_204648 23.04 20:48:02>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_204648 23.04 20:48:02>	Experiment 1: seed 18
+ID2304_204932 23.04 20:50:39>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_204932 23.04 20:50:39>	Experiment 1: seed 18
+ID2304_210941 23.04 21:10:50>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_210941 23.04 21:10:50>	Experiment 1: seed 18
+ID2304_211221 23.04 21:13:36>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_211221 23.04 21:13:36>	Experiment 1: seed 18
+ID2304_211652 23.04 21:17:56>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_211652 23.04 21:17:57>	Experiment 1: seed 18
+ID2304_224944 23.04 22:51:03>	Loaded data 400000 instances for 200 classes: 2000 traces per class, 3000 Tor cells per trace
+ID2304_224944 23.04 22:51:03>	Experiment 1: seed 18
+ID2304_224944 24.04 00:36:07>	Training took 6302.71 sec
+ID2304_224944 24.04 00:37:12>	Test loss(entropy):	0.2094
+ID2304_224944 24.04 00:37:12>	Test accuracy:	0.9552
+ID2304_224944 24.04 00:37:12>	Test took 64.97 sec

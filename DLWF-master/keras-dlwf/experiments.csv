@@ -1,0 +1,2 @@
+ID;w;tr;tr length;DNN;N layers;lr;epochs;tr loss;tr acc;cv;test loss;test acc;std acc
+2304_224944;200;2000;3000;cnn;7;0.00100538291317;10;0.0724;0.9866;x;0.2094;0.9552;x
