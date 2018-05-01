@@ -2,6 +2,9 @@ from configobj import ConfigObj
 config = ConfigObj()
 config.filename = "tor.conf"
 
+
+#nb epochs 10
+#batch size 256
 cnn = {
     'nb_epochs': 10,
     'maxlen': 3000,
