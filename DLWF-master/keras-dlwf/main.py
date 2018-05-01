@@ -101,7 +101,7 @@ def entropy(probs):
     return -e
 
 
-def log_results(id, fname, predicted, nb_classes, dnn=None, labels=None, resdir='resdir'): #, fname, res_dir=config.res_dir):
+def log_results(id, fname, predicted, nb_classes, dnn=None, labels=None, resdir='.'): #, fname, res_dir=config.res_dir):
     r = open("{}/{}.csv".format(resdir, fname), "w")
 
     r.write("correct;label;predicted;predicted_prob;entropy")
@@ -252,7 +252,7 @@ def eval_main():
     test_data = config['test_data']
     optimizer = config[dnn]['optimizer']
     decay = config[dnn][optimizer].as_float('decay')
-    wang = config.as_bool('wang')
+    #wang = config.as_bool('wang')
     maxlen = config[dnn].as_int('maxlen')
     openw = config.as_bool('openw')
 
@@ -260,11 +260,9 @@ def eval_main():
         print("Open World")
 
     print('Loading data... ')
-    x, y = load_tor_data(test_data,
-                         type=dnn,
-                         usecols=None,
+    x, y = load_data(test_data,
+                         dnn_type=dnn,
                          maxlen=maxlen,
-                         wang=wang,
                          openw=openw)
 
     nb_instances = x.shape[0]
@@ -294,9 +292,9 @@ def eval_main():
     if save_res:
         if not openw:
             nb_classes = y.shape[1]
-            log_results(id, "res_{}x{}_{}_{}".format(nb_classes, nb_instances, id, dnn), predicted, nb_classes, dnn=dnn, labels=y, resdir="results_" + dnn)
+            log_results(id, "res_{}x{}_{}_{}".format(nb_classes, nb_instances, id, dnn), predicted, nb_classes, dnn=dnn, labels=y, resdir=".")
         else:
-            log_results(id, "res_open{}_{}_{}".format(nb_instances, id, dnn), predicted, 200, dnn=dnn, resdir="results_" + dnn)
+            log_results(id, "res_open{}_{}_{}".format(nb_instances, id, dnn), predicted, 200, dnn=dnn, resdir=".")
 
 
 def main(save=False, wtime=False):
@@ -518,10 +516,10 @@ def main(save=False, wtime=False):
     if save:
         # serialize model to JSON
         model_json = best_model.to_json()
-        with open("models/{}_{}.json".format(id, dnn), "w") as json_file:
+        with open("./{}_{}.json".format(id, dnn), "w") as json_file:
             json_file.write(model_json)
         # serialize weights to HDF5
-        best_model.save_weights("models/{}_{}.h5".format(id, dnn))
+        best_model.save_weights("./{}_{}.h5".format(id, dnn))
         print("Saved model {}_{} to disk".format(id, dnn))
 
         # clean up

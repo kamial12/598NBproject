@@ -2,7 +2,6 @@ from configobj import ConfigObj
 config = ConfigObj()
 config.filename = "tor.conf"
 
-
 cnn = {
     'nb_epochs': 10,
     'maxlen': 3000,
@@ -191,14 +190,14 @@ sdae = {
     #    }
 }
 
-config['dnn'] = 'sdae'
+config['dnn'] = 'cnn'
 
 #lstm_config = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/datasets_lstm/tor_100w_1000tr_runs000_010_lstm.npz"
 ##lstm_config = "/Users/allykaminsky/Desktop/598NB/project/DLWF-master/data/closed/tor_900w_2500tr.npz"
 ##sdae_config = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/cw_datasets/tor_time_train_200w_2000tr_runs0_19.npz"
 #lstm_config#"/home/vera/deeplearn/dl-wf/src/keras-dlwf/tor_200w_2500tr_runs0_26.npz"
 #cnn_config = "cw100-1500-wtfpad-3.npz"
-cnn_config = "./../data/open/tor_open_200w_2000tr.npz"
+cnn_config = "./../data/closed/tor_200w_2500tr.npz"
 sdae_config = "./../data/open/tor_open_200w_2000tr.npz"
 lstm_config = "./../data/open/tor_open_200w_2000tr.npz"
 #"/home/vera/deeplearn/dl-wf/src/keras-dlwf/cw_datasets/tor_time_train_200w_2000tr_runs0_19.npz"  #cw_datasets/tor_200w_2500tr_runs0_26.npz" 
@@ -221,7 +220,7 @@ tor_100w_1000tr_runs0_10.npz
 config["traces"] = 2000
 #config["test_data"] = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/tor_open_400000w_runs0_41.npz"
 #config["test_data"] = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/tor_open_200w_2000tr_runs20_40.npz"
-config["test_data"] = "./../data/open/tor_open_400000w.npz"
+config["test_data"] = "./../data/open/tor_open_200w_2000tr.npz"
 '''
 tor_time_test10d_200w_100tr_runs47_48.npz
 ../cw_datasets/tor_time_test3d_200w_100tr_runs20_21.npz
@@ -230,8 +229,8 @@ tor_time_test10d_200w_100tr_runs47_48.npz
 ../cw_datasets/tor_time_test4w_200w_100tr_runs4w0_4w1.npz
 '''
 ##config["model_path"] = "/home/vera/tor/models/0808_155319_cnn"#1505_220909_sdae"#
-config["model_path"] = "../model_cnn"
-config['openw'] = True
+config["model_path"] = "./3004_000824_cnn"
+config['openw'] = False
 
 config['parts'] = False
 ##config['parts_name'] = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/cw_datasets/parts/tor_part?_900w_500tr_runs0_29.npz"
