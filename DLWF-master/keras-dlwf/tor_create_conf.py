@@ -46,7 +46,8 @@ cnn = {
     '7': {
         'name': 'dense',
         'regularization': 0.0,
-        'units': 200,
+        'units': 2,
+#        'units': 200,
         'activation': 'softmax'
     },
     'rmsprop': {
@@ -200,9 +201,9 @@ config['dnn'] = 'cnn'
 ##sdae_config = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/cw_datasets/tor_time_train_200w_2000tr_runs0_19.npz"
 #lstm_config#"/home/vera/deeplearn/dl-wf/src/keras-dlwf/tor_200w_2500tr_runs0_26.npz"
 #cnn_config = "cw100-1500-wtfpad-3.npz"
-cnn_config = "./../data/closed/tor_200w_2500tr.npz"
-sdae_config = "./../data/open/tor_open_200w_2000tr.npz"
-lstm_config = "./../data/open/tor_open_200w_2000tr.npz"
+cnn_config = "./data/closed/tor_200w_2500tr.npz"
+sdae_config = "./data/open/tor_open_200w_2000tr.npz"
+lstm_config = "./data/open/tor_open_200w_2000tr.npz"
 #"/home/vera/deeplearn/dl-wf/src/keras-dlwf/cw_datasets/tor_time_train_200w_2000tr_runs0_19.npz"  #cw_datasets/tor_200w_2500tr_runs0_26.npz" 
 #"/home/vera/deeplearn/dl-wf/src/keras-dlwf/cw_datasets/tor_900w_2500tr_runs0_29.npz" #500_shuffled.npz" #/tor_900w_2500tr_runs0_29.npz"#tor_100w_2000tr_runs0_30.npz"
 #cnn_config = "/home/vera/tor/cw_datasets/tor_time_train_200w_2000tr_runs0_19.npz"
@@ -220,10 +221,10 @@ tor_100w_1000tr_runs0_10.npz
 
 
 ##config["traces"] = 1500#1920 #0
-config["traces"] = 2000
+config["traces"] = 5000
 #config["test_data"] = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/tor_open_400000w_runs0_41.npz"
 #config["test_data"] = "/home/vera/deeplearn/dl-wf/src/keras-dlwf/tor_open_200w_2000tr_runs20_40.npz"
-config["test_data"] = "./../data/open/tor_open_200w_2000tr.npz"
+config["test_data"] = "./data/open/tor_open_200w_2000tr.npz"
 '''
 tor_time_test10d_200w_100tr_runs47_48.npz
 ../cw_datasets/tor_time_test3d_200w_100tr_runs20_21.npz
@@ -232,7 +233,7 @@ tor_time_test10d_200w_100tr_runs47_48.npz
 ../cw_datasets/tor_time_test4w_200w_100tr_runs4w0_4w1.npz
 '''
 ##config["model_path"] = "/home/vera/tor/models/0808_155319_cnn"#1505_220909_sdae"#
-config["model_path"] = "./3004_000824_cnn"
+config["model_path"] = "./0305_022445_cnn"
 config['openw'] = False
 
 config['parts'] = False
@@ -244,7 +245,7 @@ config['sdae'] = sdae
 config['cnn'] = cnn
 config['seed'] = 18
 config['cv'] = 1
-config['minlen'] = 0
+config['minlen'] = 1
 
 
 if config['dnn'] == 'sdae':
