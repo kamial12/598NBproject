@@ -50,7 +50,7 @@ def update(model, spl, pos, root, sign, prev):
     # Update Q-value
     root[slt] = ((1-a) * root[slt][0] + a * (rwd + g * max(root[slt][1], key=lambda tpl: tpl[0])[0]), root[slt][1])
     # Explore selected branch
-    update(spl, pos+slt/2+1, root[slt][1], slt%2, cur)
+    update(model,spl, pos+slt/2+1, root[slt][1], slt%2, cur)
 
 # Test Q-tree by obfuscating samples and evaluating their effectiveness
 def obfs(model, spl, pos, root, sign):
