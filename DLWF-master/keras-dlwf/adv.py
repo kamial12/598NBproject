@@ -1,8 +1,8 @@
 import random
 import numpy as np
 
-length = 2 # Length of +1,-1 array considered by classifier
-hgt = 2 # Maximum number of mutations, limits training time
+length = 3000 # Length of +1,-1 array considered by classifier
+hgt = 3 # Maximum number of mutations, limits training time
 e = 0.2 # Q-learning exploration factor
 a = 0.8 # Q-learning learning rate
 g = 0.5 # Q-learning decay factor
@@ -29,8 +29,6 @@ def branch(pos, lvl):
 
 # Recursively train Q-tree with sample
 def update(model, spl, pos, root, sign, prev):
-    print(root)
-    print(len(root))
     if len(root)<=0:
         return
 
@@ -65,7 +63,7 @@ def obfs(model, spl, pos, root, sign):
     # Choose branch that has maximum Q-value
     slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0])[0])
     # Take branch
-    return test(spl, pos+slt/2+1, root[slt][1], slt%2)
+    return obfs(model, spl, pos+slt/2+1, root[slt][1], slt%2)
 
 # Main function that should be called
 def adv(model, train, test):
@@ -85,18 +83,18 @@ def adv(model, train, test):
         spl=spl.tolist()
         rst.append(obfs(model, spl, 0, q, 0))
 
-    print rst
+    #print rst
 
-    print min(rst)
-    print max(rst)
+    #print min(rst)
+    #print max(rst)
 
     # Binary classifier decisions, False not site & True is site
     rst_bool = []
 
     for cfd in rst:
-        rst_bool.append(True if cfd>0.5 else False)
+        rst_bool.append(1 if cfd>0.5 else 0)
 
-    print rst_bool
+    return rst_bool
 
-    print float(rst_bool.count(True)) / len(rst_bool) # False positive (sample not site, labelled as site)
-    print float(rst_bool.count(False)) / len(rst_bool) # True negative (sample not site, labelled not site)
+    #print float(rst_bool.count(True)) / len(rst_bool) # False positive (sample not site, labelled as site)
+    #print float(rst_bool.count(False)) / len(rst_bool) # True negative (sample not site, labelled not site)

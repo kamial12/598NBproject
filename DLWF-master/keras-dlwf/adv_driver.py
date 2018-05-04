@@ -35,4 +35,31 @@ epochs = 1
 model_path = config['model_path']
 model = load_model(model_path)
 
-adv(model,train,test)
+pred = adv(model,train,test)
+
+cm1 = confusion_matrix(y_test[:,1],pred)
+TruePositive = np.diag(cm1)
+
+FalsePositive = []
+for i in range(num_classes):
+    FalsePositive.append(sum(cm1[:,i]) - cm1[i,i])
+FalsePositive
+
+FalseNegative = []
+for i in range(num_classes):
+    FalseNegative.append(sum(cm1[i,:]) - cm1[i,i])
+FalseNegative
+
+TrueNegative = []
+for i in range(num_classes):
+    temp = np.delete(cm1, i, 0)   # delete ith row
+    temp = np.delete(temp, i, 1)  # delete ith column
+    TrueNegative.append(sum(sum(temp)))
+TrueNegative
+
+l = len(y_test)
+for i in range(num_classes):
+    print(TruePositive[i] + FalsePositive[i] + FalseNegative[i] + TrueNegative[i] == l)
+
+print(TruePositive)
+print(FalsePositive)
