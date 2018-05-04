@@ -41,26 +41,26 @@ def update(model, spl, pos, root, sign, prev):
     rwd = cur - prev
 
 # Choose which branch to take at random with exploration factor probability
-    if random.random() < e:
-        slt = random.randint(0, len(root)-1)
-# Choose branch that has the maximum Q-value
+if random.random() < e:
+    slt = random.randint(0, len(root)-1)
+    # Choose branch that has the maximum Q-value
     else:
     slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0]))
-
-# Update Q-value
+    
+    # Update Q-value
     root[slt][0] = (1-a) * root[slt][0] + a * (rwd + g * max(root[slt][1], key=lambda tpl: tpl[0]))
-# Explore selected branch
+    # Explore selected branch
     update(spl, pos+slt/2+1, root[slt][1], slt%2, cur)
 
 # Test Q-tree by obfuscating samples and evaluating their effectiveness
 def obfs(model, spl, pos, root, sign):
     if len(root)<= 0:
-    #return classify(model, spl)
+        #return classify(model, spl)
         return model.predict(spl[0:3000].reshape((1,3000,1)))[0,1]
     
     transform(spl, pos-1, sign)
 
-# Choose branch that has maximum Q-value
+    # Choose branch that has maximum Q-value
     slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0]))
     # Take branch
     return test(spl, pos+slt/2+1, root[slt][1], slt%2)
@@ -73,13 +73,13 @@ def adv(model, train, test):
     # Train Q-tree
     for spl in train:
         update(model, spl, 0, q, 0, 0.0)
-
+    
     # Confidence results, 0.0 not site - 1.0 is site
     rst = []
 
 # Test Q-tree
-    for spl in test:
-        rst.append(obfs(model, spl, 0, q, 0))
+for spl in test:
+    rst.append(obfs(model, spl, 0, q, 0))
     
     print rst
     
@@ -92,7 +92,7 @@ def adv(model, train, test):
     for cfd in rst:
         rst_bool.append(True if cfd>0.5 else False)
 
-    print rst_bool
-
+print rst_bool
+    
     print float(rst_bool.count(True)) / len(rst_bool) # False positive (sample not site, labelled as site)
     print float(rst_bool.count(False)) / len(rst_bool) # True negative (sample not site, labelled not site)
