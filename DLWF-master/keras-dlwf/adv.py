@@ -48,7 +48,7 @@ def update(model, spl, pos, root, sign, prev):
         slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0]))
     
     # Update Q-value
-    root[slt][0] = (1-a) * root[slt][0] + a * (rwd + g * max(root[slt][1], key=lambda tpl: tpl[0]))
+    root[slt] = ((1-a) * root[slt][0] + a * (rwd + g * max(root[slt][1], key=lambda tpl: tpl[0])[0]), root[slt][1])
     # Explore selected branch
     update(spl, pos+slt/2+1, root[slt][1], slt%2, cur)
 
