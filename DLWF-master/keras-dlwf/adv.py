@@ -1,8 +1,8 @@
 import random
 import numpy as np
 
-length = 10 # Length of +1,-1 array considered by classifier
-hgt = 1 # Maximum number of mutations, limits training time
+length = 3000 # Length of +1,-1 array considered by classifier
+hgt = 2 # Maximum number of mutations, limits training time
 e = 0.2 # Q-learning exploration factor
 a = 0.8 # Q-learning learning rate
 g = 0.5 # Q-learning decay factor
@@ -66,7 +66,10 @@ def obfs(model, spl, pos, root, sign):
     return obfs(model, spl, pos+slt/2+1, root[slt][1], slt%2)
 
 # Main function that should be called
-def adv(model, train, test):
+def adv(model, train, test, height):
+    hgt = height
+    print("hgt")
+    print(hgt)
     # Build Q-tree
     q = branch(0, 0)
     
@@ -84,17 +87,11 @@ def adv(model, train, test):
         rst.append(obfs(model, spl, 0, q, 0))
     
     #print rst
+
+    return rst
     
     #print min(rst)
     #print max(rst)
-    
-    # Binary classifier decisions, False not site & True is site
-    rst_bool = []
-    
-    for cfd in rst:
-        rst_bool.append(1 if cfd>0.5 else 0)
-    
-    return rst_bool
 
 #print float(rst_bool.count(True)) / len(rst_bool) # False positive (sample not site, labelled as site)
 #print float(rst_bool.count(False)) / len(rst_bool) # True negative (sample not site, labelled not site)

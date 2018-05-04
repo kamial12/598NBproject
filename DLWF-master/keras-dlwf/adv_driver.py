@@ -35,31 +35,59 @@ epochs = 1
 model_path = config['model_path']
 model = load_model(model_path)
 
-pred = adv(model,train,test)
+pre_cls=model.predict_classes(x_test)
+conf = model.predict(x_test)
+print("baseline confidence")
+print(sum(conf)/len(conf))
 
-cm1 = confusion_matrix(y_test[:,1],pred)
-TruePositive = np.diag(cm1)
+cm_keras = confusion_matrix(y_test[:,1],pre_cls)
+TP_keras = np.diag(cm_keras)
 
-FalsePositive = []
+FalsePositive_keras = []
 for i in range(num_classes):
-    FalsePositive.append(sum(cm1[:,i]) - cm1[i,i])
-FalsePositive
+    FalsePositive_keras.append(sum(cm_keras[:,i]) - cm_keras[i,i])
+FalsePositive_keras
 
-FalseNegative = []
-for i in range(num_classes):
-    FalseNegative.append(sum(cm1[i,:]) - cm1[i,i])
-FalseNegative
+print("baseline")
+print(TP_keras)
+print(FalsePositive_keras)
 
-TrueNegative = []
-for i in range(num_classes):
-    temp = np.delete(cm1, i, 0)   # delete ith row
-    temp = np.delete(temp, i, 1)  # delete ith column
-    TrueNegative.append(sum(sum(temp)))
-TrueNegative
+for i in range(1,3):
+    print("# muts")
+    print(i)
+    rst = adv(model,train,test,i)
+    # Binary classifier decisions, False not site & True is site
+    print("avg confidence")
+    print(sum(rst)/len(rst))
+    pred = []
+    for cfd in rst:
+        pred.append(1 if cfd>0.5 else 0)
 
-l = len(y_test)
-for i in range(num_classes):
-    print(TruePositive[i] + FalsePositive[i] + FalseNegative[i] + TrueNegative[i] == l)
+    cm1 = confusion_matrix(y_test[:,1],pred)
+    TruePositive_adv = np.diag(cm1)
 
-print(TruePositive)
-print(FalsePositive)
+    FalsePositive = []
+    for i in range(num_classes):
+        FalsePositive.append(sum(cm1[:,i]) - cm1[i,i])
+    FalsePositive
+
+    print("adv")
+    print(i)
+    print(TruePositive_adv)
+    print(FalsePositive)
+
+#FalseNegative = []
+#for i in range(num_classes):
+#    FalseNegative.append(sum(cm1[i,:]) - cm1[i,i])
+#FalseNegative
+
+#TrueNegative = []
+#for i in range(num_classes):
+#    temp = np.delete(cm1, i, 0)   # delete ith row
+#    temp = np.delete(temp, i, 1)  # delete ith column
+#    TrueNegative.append(sum(sum(temp)))
+#TrueNegative
+
+#l = len(y_test)
+#for i in range(num_classes):
+#    print(TruePositive[i] + FalsePositive[i] + FalseNegative[i] + TrueNegative[i] == l)
