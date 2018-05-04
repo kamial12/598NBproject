@@ -40,12 +40,12 @@ def update(model, spl, pos, root, sign, prev):
     # Reward is the level of increase in confidence level
     rwd = cur - prev
 
-# Choose which branch to take at random with exploration factor probability
-if random.random() < e:
-    slt = random.randint(0, len(root)-1)
+    # Choose which branch to take at random with exploration factor probability
+    if random.random() < e:
+        slt = random.randint(0, len(root)-1)
     # Choose branch that has the maximum Q-value
     else:
-    slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0]))
+        slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0]))
     
     # Update Q-value
     root[slt][0] = (1-a) * root[slt][0] + a * (rwd + g * max(root[slt][1], key=lambda tpl: tpl[0]))
@@ -77,9 +77,9 @@ def adv(model, train, test):
     # Confidence results, 0.0 not site - 1.0 is site
     rst = []
 
-# Test Q-tree
-for spl in test:
-    rst.append(obfs(model, spl, 0, q, 0))
+    # Test Q-tree
+    for spl in test:
+        rst.append(obfs(model, spl, 0, q, 0))
     
     print rst
     
@@ -92,7 +92,7 @@ for spl in test:
     for cfd in rst:
         rst_bool.append(True if cfd>0.5 else False)
 
-print rst_bool
+    print rst_bool
     
     print float(rst_bool.count(True)) / len(rst_bool) # False positive (sample not site, labelled as site)
     print float(rst_bool.count(False)) / len(rst_bool) # True negative (sample not site, labelled not site)
