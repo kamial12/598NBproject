@@ -64,7 +64,7 @@ def obfs(model, spl, pos, root, sign):
     # Choose branch that has maximum Q-value
     slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0])[0])
     # Take branch
-    return test(spl, pos+slt/2+1, root[slt][1], slt%2)
+    return obfs(spl, pos+slt/2+1, root[slt][1], slt%2)
 
 # Main function that should be called
 def adv(model, train, test):
