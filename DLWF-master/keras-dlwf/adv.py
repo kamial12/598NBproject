@@ -42,7 +42,7 @@ def update(model, spl, pos, root, sign, prev):
         slt = random.randint(0, len(root)-1)
     # Choose branch that has the maximum Q-value
     else:
-        slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0]))
+        slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0])[0])
 
     # Update Q-value
     root[slt] = ((1-a) * root[slt][0] + a * (rwd + g * max(root[slt][1], key=lambda tpl: tpl[0])[0]), root[slt][1])
@@ -57,7 +57,7 @@ def obfs(model, spl, pos, root, sign):
     transform(spl, pos-1, sign)
 
     # Choose branch that has maximum Q-value
-    slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0]))
+    slt = [tpl[0] for tpl in root].index(max(root, key=lambda tpl: tpl[0])[0])
     # Take branch
     return test(spl, pos+slt/2+1, root[slt][1], slt%2)
 
