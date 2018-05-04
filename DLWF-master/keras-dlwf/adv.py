@@ -22,7 +22,9 @@ def branch(pos, lvl):
 
     # Extend 2 branches (+1, -1) for every position remaining that is available for padding
     # Last branch to catch end state (stop mutating)
-    return [(0.0, branch(pos+step/2+1, lvl+1)) for step in 2*range(len-pos+1)].append((0.0, branch(len, lvl+1)))
+    l = [(0.0, branch(pos+step/2+1, lvl+1)) for step in 2*range(len-pos+1)]
+    l.append((0.0, branch(len, lvl+1)))
+    return l
 
 # Recursively train Q-tree with sample
 def update(model, spl, pos, root, sign, prev):
@@ -88,5 +90,5 @@ def adv(model, train, test):
 
     print rst_bool
 
-    print rst_bool.count(True) / len(rst_bool) # False positive (sample not site, labelled as site)
-    print rst_bool.count(False) / len(rst_bool) # True negative (sample not site, labelled not site)
+    print float(rst_bool.count(True)) / len(rst_bool) # False positive (sample not site, labelled as site)
+    print float(rst_bool.count(False)) / len(rst_bool) # True negative (sample not site, labelled not site)
