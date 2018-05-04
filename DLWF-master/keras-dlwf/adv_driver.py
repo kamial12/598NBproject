@@ -52,10 +52,10 @@ print("baseline")
 print(TP_keras)
 print(FalsePositive_keras)
 
-for i in range(1,3):
+for z in range(1,4):
     print("# muts")
-    print(i)
-    rst = adv(model,train,test,i)
+    print(z)
+    rst = adv(model,train,test,z)
     # Binary classifier decisions, False not site & True is site
     print("avg confidence")
     print(sum(rst)/len(rst))
@@ -72,7 +72,7 @@ for i in range(1,3):
     FalsePositive
 
     print("adv")
-    print(i)
+    print(z)
     print(TruePositive_adv)
     print(FalsePositive)
 
