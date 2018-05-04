@@ -1,3 +1,4 @@
+import pdb
 import numpy as np
 from keras.utils import np_utils
 import keras.preprocessing.sequence as sq
@@ -33,7 +34,11 @@ class DataGenerator(object):
         """Generates batches of samples"""
         nb_instances = data.shape[0]
         nb_classes = labels.shape[1]
+        print 'nb_instances:', data.shape[0]
+        print 'nb_classes:', labels.shape[1]
+
         sample_shape = data[0].shape
+        print 'sample_shape', data[0].shape
         batch_data_shape = tuple([self.batch_size] + list(sample_shape))
         batch_label_shape = (self.batch_size, nb_classes)
         # Infinite loop
@@ -64,14 +69,18 @@ def load_data(path, maxlen=None, minlen=0, traces=0, dnn_type=None, openw=False)
     data = npzfile["data"]
     labels = npzfile["labels"]
     npzfile.close()
+    
+    from collections import defaultdict
+
+    per_website_dataset = defaultdict(list)
 
     if minlen:
         num_traces = {}
         print("Filter on minlen={}\n".format(minlen))
         if traces:
             print("Filter on number of traces={}\n".format(traces))
-        new_data = []
-        new_labels = []
+#        new_data = []
+#        new_labels = []
         for x, y in zip(data, labels):
             if y not in num_traces:
                 num_traces[y] = 0
@@ -80,12 +89,46 @@ def load_data(path, maxlen=None, minlen=0, traces=0, dnn_type=None, openw=False)
                 if count == traces:
                     continue
             if len(x) >= minlen:
-                new_data.append(x)
-                new_labels.append(y)
+#                new_data.append(x)
+#                new_labels.append(y)
                 num_traces[y] = count + 1
-        data = np.array(new_data)
-        labels = np.array(new_labels)
-        del new_data, new_labels
+                per_website_dataset[y].append(x)
+
+        print per_website_dataset.keys()
+
+        wells_fargo_data = []
+        wells_fargo_labels = []
+        for data in per_website_dataset['twitch.tv']:
+            wells_fargo_data.append(data)
+            wells_fargo_labels.append('0')
+
+        wells_fargo_data = np.array(wells_fargo_data)
+        wells_fargo_labels = np.array(wells_fargo_labels)
+
+        print 'Num wells fargo data:', len(wells_fargo_data)
+        
+        del per_website_dataset['twitch.tv']
+
+        # grab 25 of each of the other sites that aren't wells fargo
+        other_data = []
+        other_labels = []
+        for website in per_website_dataset:
+            ddata = np.array(per_website_dataset[website])
+            idxs = np.random.choice(len(ddata), 25)
+            ddata = ddata[idxs]
+            for d in ddata:
+                other_data.append(d)
+                other_labels.append('1')
+
+        other_data = np.array(other_data)
+        other_labels = np.array(other_labels)
+        print 'amount of other data:', len(other_data)
+
+        print wells_fargo_data.shape, other_data.shape
+        data = np.concatenate([wells_fargo_data,other_data])
+        labels = np.concatenate([wells_fargo_labels,other_labels])
+
+#        del new_data, new_labels
         if not data.size:
             raise ValueError('After filtering, no sequence left.')
         del num_traces
@@ -100,6 +143,8 @@ def load_data(path, maxlen=None, minlen=0, traces=0, dnn_type=None, openw=False)
 
     if dnn_type == "lstm" or dnn_type == "cnn":
         data = data.reshape(data.shape[0], data.shape[1], 1)
+        #wells_fargo_data = wells_fargo_data.reshape(data.shape[0], data.shape[1], 1)
+        #other_data = other_data.reshape(other_data.shape[0], other_data.shape[1], 1)
     if type == "sdae" and len(data.shape) > 2:
         print("WEIRD! data.shape={}".format(data.shape))
         data = data.reshape(data.shape[0], data.shape[1])
@@ -110,6 +155,8 @@ def load_data(path, maxlen=None, minlen=0, traces=0, dnn_type=None, openw=False)
 
     print("Data {}, labels {}".format(data.shape, labels.shape))
 
+
+    #return wells_fargo_data, wells_fargo_labels, other_data, other_labels
     return data, labels
 
 

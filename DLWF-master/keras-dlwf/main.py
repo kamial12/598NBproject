@@ -15,7 +15,9 @@ from data import load_data, split_dataset, DataGenerator
 import tor_lstm
 import tor_sdae
 import tor_cnn
+import tensorflow as tf
 
+#tf.enable_eager_execution()
 
 torconf = "tor.conf"
 config = ConfigObj(torconf)
@@ -176,6 +178,19 @@ def run(id, cv, data_params, learn_params, model=None):
         else:  # elif learn_params['dnn_type'] == "cnn":
             model = tor_cnn.build_model(learn_params, nb_classes)
 
+    def false_positive(y_true, y_pred):
+        negatives = 0
+        fp = 0
+
+        for tr,pred in zip(y_true,y_pred):
+            if y_true == '1':
+                negatives += 1
+                if y_pred == '0':
+                    fp += 1
+
+        print 'False positives:', float(fp)/negatives
+        return float(fp)/negatives
+
     metrics = ['accuracy']
 
     optimizer = None
@@ -193,7 +208,10 @@ def run(id, cv, data_params, learn_params, model=None):
 
     model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics=metrics)
 
+    print('model summary')
     print(model.summary())
+    print('model to json')
+    print(model.to_json())
 
     start = time.time()
     # Train model on dataset
@@ -262,15 +280,70 @@ def eval_main():
     print('Loading data... ')
     x, y = load_data(test_data,
                          dnn_type=dnn,
+                         minlen=1,
                          maxlen=maxlen,
                          openw=openw)
 
     nb_instances = x.shape[0]
     nb_packets = x.shape[1]
+    print 'nb_instances:', x.shape[0]
+    print 'nb_packets:', x.shape[1]
+
 
     log(id, 'Loaded data {} test instances {} packets long'.format(nb_instances, nb_packets), dnn)
 
-    metrics = ['accuracy']
+    count_other = 0
+    def fp(y_true, y_pred):
+        #false_positives = tf.metrics.false_positives(y_true, y_pred)
+        other_count = tf.reduce_sum(tf.cast(y_true, tf.int8))
+        print 'other_count:', other_count
+            
+    
+        for tr,pr in zip(true,pred):
+            pass
+        return 0
+
+    def f1_score(y_true, y_pred):
+        """
+        f1 score
+    
+        :param y_true:
+        :param y_pred:
+        :return:
+        """
+        tp_3d = K.concatenate(
+            [
+                K.cast(y_true, 'bool'),
+                K.cast(K.round(y_pred), 'bool'),
+                K.cast(K.ones_like(y_pred), 'bool')
+            ]
+        )
+    
+        fp_3d = K.concatenate(
+            [
+                K.cast(K.abs(y_true - K.ones_like(y_true)), 'bool'),
+                K.cast(K.round(y_pred), 'bool'),
+                K.cast(K.ones_like(y_pred), 'bool')
+            ]
+        )
+    
+        fn_3d = K.concatenate(
+            [
+                K.cast(y_true, 'bool'),
+                K.cast(K.abs(K.round(y_pred) - K.ones_like(y_pred)), 'bool'),
+                K.cast(K.ones_like(y_pred), 'bool')
+            ]
+        )
+    
+        tp = K.sum(K.cast(K.all(tp_3d), 'int32'))
+        fp = K.sum(K.cast(K.all(fp_3d), 'int32'))
+        fn = K.sum(K.cast(K.all(fn_3d), 'int32'))
+        return tp,fp,fn	
+	 #   precision = tp / (tp + fp)
+	 #   recall = tp / (tp + fn)
+	 #   return 2 * ((precision * recall) / (precision + recall))
+
+    metrics = ['accuracy', f1_score]
 
     if optimizer == "sgd":
         optimizer = SGD()
@@ -326,18 +399,34 @@ def main(save=False, wtime=False):
     start = time.time()
     print('Loading data {}... '.format(datapath))
     data, labels = load_data(datapath,
+    #site_data, site_labels, other_data, other_labels = load_data(datapath,
                              minlen=minlen,
                              maxlen=maxlen,
                              traces=traces,
                              dnn_type=dnn)
     end = time.time()
-
+        
     print("Took {:.2f} sec to load.".format(end - start))
+
+#    nb_site_instances = site_data.shape[0]
+#    nb_site_cells = site_data.shape[1]
+#    nb_other_instances = other_data.shape[0]
+#    nb_other_cells = other_data.shape[1]
+#
+#    nb_other_classes = labels.shape[1]
+
+    #print 'nb_site_instances:', nb_site_instances 
+    #print 'nb_other_classs:', nb_other_classes
 
     nb_instances = data.shape[0]
     nb_cells = data.shape[1]
     nb_classes = labels.shape[1]
     nb_traces = int(nb_instances / nb_classes)
+    print 'nb_instaced:', nb_instances
+    print 'nb_cells:', nb_cells
+    print 'nb_classes:', nb_classes
+    print 'nb_traces:', nb_traces
+
 
     log(id, 'Loaded data {} instances for {} classes: '
             '{} traces per class, {} Tor cells per trace'.format(nb_instances,
@@ -363,6 +452,8 @@ def main(save=False, wtime=False):
     best_model = None
 
     ID = id
+#    site_indices = np.arange(nb_site_instances)
+#    other_indices = np.arange(nb_other_instances)
     indices = np.arange(nb_instances)
     for cv in range(1, cross_val + 1):
         model = None
