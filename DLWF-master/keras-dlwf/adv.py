@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 length = 2 # Length of +1,-1 array considered by classifier
 hgt = 2 # Maximum number of mutations, limits training time
@@ -36,7 +37,7 @@ def update(model, spl, pos, root, sign, prev):
     transform(spl, pos-1, sign)
     # Current confidence level of classifier
     #cur = classify(model, spl)
-    cur = model.predict(spl[0:3000].reshape((1,3000,1)))[0,1]
+    cur = model.predict(np.asarray(spl[0:3000]).reshape((1,3000,1)))[0,1]
     # Reward is the level of increase in confidence level
     rwd = cur - prev
 
@@ -57,7 +58,7 @@ def update(model, spl, pos, root, sign, prev):
 def obfs(model, spl, pos, root, sign):
     if len(root)<= 0:
         #return classify(model, spl)
-        return model.predict(spl[0:3000].reshape((1,3000,1)))[0,1]
+        return model.predict(np.asarray(spl[0:3000]).reshape((1,3000,1)))[0,1]
 
     transform(spl, pos-1, sign)
 
@@ -73,6 +74,7 @@ def adv(model, train, test):
 
     # Train Q-tree
     for spl in train:
+        spl=spl.tolist()
         update(model, spl, 0, q, 0, 0.0)
 
     # Confidence results, 0.0 not site - 1.0 is site
@@ -80,6 +82,7 @@ def adv(model, train, test):
 
     # Test Q-tree
     for spl in test:
+        spl=spl.tolist()
         rst.append(obfs(model, spl, 0, q, 0))
 
     print rst
