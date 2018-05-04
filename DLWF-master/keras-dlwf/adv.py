@@ -22,7 +22,7 @@ def branch(pos, lvl):
 
     # Extend 2 branches (+1, -1) for every position remaining that is available for padding
     # Last branch to catch end state (stop mutating)
-    return [(0.0, branch(pos+step+1, lvl+1)), (0.0, branch(pos+step+1, lvl+1)) for step in range(len-pos+1)].append((0.0, branch(len, lvl+1)))
+    return [(0.0, branch(pos+step/2+1, lvl+1)) for step in 2*range(len-pos+1)].append((0.0, branch(len, lvl+1)))
 
 # Recursively train Q-tree with sample
 def update(model, spl, pos, root, sign, prev):
